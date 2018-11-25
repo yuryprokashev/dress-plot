@@ -6,7 +6,6 @@ class SkirtPart(object):
         self.segments = []
         self.name = "skirt"
 
-
         segment1_config = dict()
         segment1_config["type"] = "linear"
         # TODO It is not exactly skirt_shift. Need adjustment on H2-H3 y
@@ -23,10 +22,6 @@ class SkirtPart(object):
 
         segment3_config = dict()
         segment3_config["type"] = "linear"
-        segment3_config["line_k"] = 0.0
-        segment3_config["is_vertical"] = False
-        segment3_config["length"] = dress_size.half_chest - part_config["skirt_shift"]
-
-        segment3_config["direction_v"] = "up"
-        segment3_config["direction_h"] = "left"
+        segment3_config["relative_end_x"] = - (dress_size.half_chest - part_config["skirt_shift"])
+        segment3_config["relative_end_y"] = 0
         self.segments.append(SegmentFactory.create(segment3_config))
