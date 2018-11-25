@@ -48,8 +48,10 @@ dress_config = [
 # This object represents the data of the specific dress, that we would like to plot then
 dress = DressFactory.create("Simple Dress", size, dress_config)
 
-# This call asks dress_plotter to plot the dress, that contains segments
+# This call creates the 2D Point, that will be used as starting point of the plot
 start_point = PointFactory.create("2D", [0, 0])
+
+# This call asks dress_plotter to plot the dress from start_point
 dress_plotter.plot(dress, start_point)
 
 # This call asks dress_plotter to show the results on the matplotlib figure
