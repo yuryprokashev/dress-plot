@@ -1,3 +1,8 @@
+from classes.entity.SegmentType import SegmentType
+from classes.entity.CurveDirection import CurveDirection
+from classes.interactor.CurveDirectionFactory import CurveDirectionFactory
+
+
 class SegmentPlotter(object):
     def __init__(self, plotlib):
         self.plotlib = plotlib
@@ -19,43 +24,30 @@ class SegmentPlotter(object):
     def get_path_points(self, segment_plot):
         result = list()
         result.append((segment_plot.start.x, segment_plot.start.y))
-        if segment_plot.type == "elliptic":
-            # The order of the points for CURVE3 determines the convexity of the line
-            # if you move from start.x < end.x (curve goes left), then you:
-            # 1) move x left
-            # 2) move y up
-            # => you will get the convex curve, going up
-            # if you instead do
-            # 1) move x left
-            # 2) move y down
-            # => you will get the concave curve, going down
-            # Now if you move from start.x > end.x (curve goes right), then you:
-            # 1) move x right
-            # 2) move y down
-            # => you get concave curve going right
-            # if instead you do:
-            # 1) move y down
-            # 2) move x right
-            # => you get convex curve going right
-            # TODO NOW THIS CODE WORKS ONLY FOR THE SIMPLE DRESS CASE!
-            # TODO Make this part of the code support all possible variations of the curves
-            if segment_plot.start.x < segment_plot.end.x:
+        curve_direction = CurveDirectionFactory.create(segment_plot)
+        if segment_plot.type == SegmentType.ELLIPTIC_CONVEX:
+            if curve_direction == CurveDirection.UP_RIGHT or curve_direction == CurveDirection.UP_LEFT:
                 result.append((segment_plot.end.x, segment_plot.start.y))
-                result.append((segment_plot.end.x, segment_plot.end.y))
-            elif segment_plot.start.x > segment_plot.end.x:
+            elif curve_direction == CurveDirection.DOWN_RIGHT or CurveDirection.DOWN_LEFT:
                 result.append((segment_plot.start.x, segment_plot.end.y))
-                result.append((segment_plot.end.x, segment_plot.end.y))
-        elif segment_plot.type == "linear":
+            result.append((segment_plot.end.x, segment_plot.end.y))
+        elif segment_plot.type == SegmentType.ELLIPTIC_CONCAVE:
+            if curve_direction == CurveDirection.UP_RIGHT or curve_direction == CurveDirection.UP_LEFT:
+                result.append((segment_plot.start.x, segment_plot.end.y))
+            elif curve_direction == CurveDirection.DOWN_RIGHT or CurveDirection.DOWN_LEFT:
+                result.append((segment_plot.end.x, segment_plot.start.y))
+            result.append((segment_plot.end.x, segment_plot.end.y))
+        elif segment_plot.type == SegmentType.LINEAR:
             result.append((segment_plot.end.x, segment_plot.end.y))
         return result
 
     def get_path_codes(self, segment_plot):
         result = list()
         result.append(self.Path.MOVETO)
-        if segment_plot.type == "elliptic":
+        if segment_plot.type == SegmentType.ELLIPTIC_CONCAVE or segment_plot.type == SegmentType.ELLIPTIC_CONVEX:
             result.append(self.Path.CURVE3)
             result.append(self.Path.CURVE3)
-        elif segment_plot.type == "linear":
+        elif segment_plot.type == SegmentType.LINEAR:
             result.append(self.Path.LINETO)
         return result
 

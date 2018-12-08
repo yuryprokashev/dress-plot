@@ -25,22 +25,17 @@ size = SizeFactory.create("XS")
 # This array describes the configuration of the dress
 # Dress consists of these parts.
 # Each part consists of 1..N segments
-neck_config = dict()
-neck_config["name"] = "neck"
-neck_config["a_to_b_ratio"] = 3.0
-
-sleeve_config = dict()
-sleeve_config["name"] = "sleeve"
-sleeve_config["length"] = 6.0
-
-skirt_config = dict()
-skirt_config["name"] = "skirt"
-skirt_config["skirt_shift"] = 10.0
+full_config = dict()
+full_config["name"] = "full"
+full_config["sleeve_ledge"] = 6.0
+full_config["chest_increase"] = 8.0
+full_config["shoulder_increase"] = 7.0
+full_config["neck_increase"] = 1.0
+full_config["skirt_bottom_increase"] = 12.0
+full_config["skirt_rise"] = 1.5
 
 dress_config = [
-    neck_config,
-    sleeve_config,
-    skirt_config
+    full_config
 ]
 
 # This object contains the logic that builds the specific Dress segments
